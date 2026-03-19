@@ -1,73 +1,61 @@
-BigRedH Media Bridge
-An Ephemeral Media Gateway for the Hotline Communications Protocol
-The BigRedH Media Bridge is a legacy-friendly, zero-SSL, HTTP-based API that allows Hotline clients to share and render inline media. By bridging the gap between 1990s-era text chat and modern rich media expectations, it provides a "fool-proof" workflow for the entire community.
+BigRedH Media Bridge: Documentation & Setup
+The BigRedH Media Bridge is a specialized, ephemeral media sharing solution designed for the Hotline Communications network. It allows users to upload images and receive a direct URL that modern Hotline clients can render inline within chat.
 
-🚀 The BigRedH Workflow
-Upload: A modern Hotline client uploads an image to the bridge via a simple POST request.
+System Requirements
 
-Response: The bridge returns a JSON object containing a direct URL, image dimensions, and an expiration timestamp.
+PHP: 7.4 or higher.
 
-Broadcast: The client sends the URL as a standard Hotline chat message.
+Database: MySQL or MariaDB.
 
-Render: Receiving clients recognize the images.bigredh.com domain via Regex and render the image inline. Legacy clients see a clickable link compatible with retro browsers.
+Extensions: mysqli, gd (for getimagesize), and openssl (for random_bytes).
 
-🛠 Installation for Server Hosts
-1. Database Setup
-Import the provided database.sql into your MariaDB/MySQL environment. This creates the tables for tracking uploads and managing bans.
+Web Server: Apache (with mod_rewrite enabled for the included .htaccess).
 
-2. Configuration
-Rename config.sample.php to config.php and update your credentials:
+Installation Steps
+Database Setup:
 
-DB Details: Host, User, Pass, Name.
+Import the provided SQL Setup.sql into your database.
 
-Security: Generate a password hash for the admin panel.
+This creates the media_uploads table to track files and the banned_users table for moderation.
 
-Retention: Set your media_expiry_hrs (Default: 48).
+Configuration:
 
-3. Permissions
-Create a folder named u/ in your root directory and ensure it is writable by the server:
+Open config.php and enter your database host, username, password, and database name.
 
-Bash
-mkdir u
-chmod 755 u
-4. The Janitor (Cron Job)
-To automate the 48-hour purge logic, set a Cron Job to run hourly:
+Update the base_url to match your domain (e.g., http://images.yourserver.com/).
 
-Bash
-0 * * * * php /path/to/cleanup.php
-📡 API Documentation
-POST /upload.php
-Accepts image data and returns metadata.
+Security:
 
-Parameters:
+Run passwordHasher.php in your browser to generate a secure hash for your admin password.
 
-file (Required): Binary image data (multipart/form-data).
+Copy the resulting string and paste it into the admin_hash field in config.php.
 
-client_id (Optional): String identifying your client software.
+File Permissions:
 
-Sample Response:
+Create a directory named u/ in the root folder.
 
-JSON
-{
-  "success": true,
-  "url": "http://images.bigredh.com/u/abcdef123456.jpg",
-  "width": 1024,
-  "height": 768,
-  "expires_at": "2026-03-18 20:00:00",
-  "client": "HotlineClient-v1"
-}
-Client Rendering Regex
-Use this to scan chat logs for BigRedH media:
-http:\/\/images\.bigredh\.com\/u\/[a-f0-9]+\.(jpg|jpeg|png|gif|bmp)
+Ensure the web server has write access to this folder (typically chmod 755 or 775).
 
-🛡 Moderation
-The included admin.php provides a visual grid of all active media on your server.
+Automation:
 
-Visual Audit: Instantly scan all current uploads.
+Set up a Cron Job to run cleanup.php every hour to delete expired images:
 
-IP Tracing: Identify the source of any upload.
+0 * * * * php /path/to/your/site/cleanup.php
 
-Nuke & Ban: Single-click logic to delete the file, remove the database entry, and blacklist the uploader's IP.
+Features for Administrators
 
-📝 License
-Distributed under the MIT License. See LICENSE for more information.
+Moderation Gallery: Access admin.php to view all currently hosted images.
+
+
+Manual Nuke: The "NUKE & BAN" button instantly deletes a file from the server and bans the uploader's IP address.
+
+Ephemeral Storage: Files are automatically deleted after the timeframe specified in your config (default: 48 hours).
+
+Rate Limiting: Prevents spam by limiting the number of uploads per IP within a specific window.
+
+API Usage
+To integrate this into a custom Hotline client or bot, send a POST request to upload.php:
+
+Field: file (Binary image data).
+
+Optional: client_id (To identify your specific application in the logs).
