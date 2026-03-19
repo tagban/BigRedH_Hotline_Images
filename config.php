@@ -5,16 +5,16 @@ if (count(get_included_files()) == 1) exit("Direct access not permitted.");
 $web_config = [
     // Database Credentials
     'db_host' => 'localhost',
-    'db_user' => 'USER',
-    'db_pass' => 'PASSWORD',
-    'db_name' => 'DB NAME',
+    'db_user' => 'YOUR_USERNAME',
+    'db_pass' => 'YOUR_PASS',
+    'db_name' => 'YOUR_DB',
 
     // Security & Logic
-    'admin_hash'       => 'HASHED PASSWORD(use passwordHasher.php)', // Replace with your actual hash
+    'admin_hash'       => 'YOUR_HASHED_PASSWORD', // Replace with your actual hash
     'media_expiry_hrs' => 48,
     'upload_limit'     => 5,     
     'limit_window'     => 600,   
-    'base_url'         => '<URL>' // ex:http://images.bigredh.com/
+    'base_url'         => 'http://images.bigredh.com/' 
 ];
 
 // Establish Connection
