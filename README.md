@@ -37,3 +37,24 @@ To keep your server from filling up, set a **Cron Job** to run the cleanup scrip
 
 ```bash
 0 * * * * php /path/to/your/site/cleanup.php
+
+
+---
+
+## 🛡️ Moderation & Administration
+
+The `admin.php` panel provides a visual interface for managing your ephemeral storage and maintaining community standards.
+
+> [!IMPORTANT]
+> Access to the admin panel is protected by the `admin_hash` set in your `config.php`. Ensure you use a strong password when generating your hash.
+
+### Key Features:
+* **Visual Gallery**: Review all currently hosted images in a responsive grid layout.
+* **IP Tracking**: See the uploader's IP address and the specific Hotline client used for the upload.
+* **Manual Nuke**: Instantly deletes the image from the `u/` directory and removes its database record.
+* **Automated Banning**: Using the "Nuke" button automatically adds the uploader's IP to the `banned_users` table to prevent future abuse.
+
+### Security Note
+The included `.htaccess` file is configured to enforce **HTTPS** and strictly deny direct web access to your `config.php` file to prevent credential leakage.
+
+---
